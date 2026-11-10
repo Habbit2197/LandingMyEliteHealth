@@ -1,0 +1,35 @@
+---
+import { SITE } from '../config';
+interface Props { lang?: 'es' | 'en'; }
+const { lang = 'es' } = Astro.props;
+const es = lang === 'es';
+---
+<footer class="footer">
+  <div class="wrap footer-grid">
+    <div>
+      <a class="brand" href="/"><img src="/img/icono-padel.webp" alt="" width="34" height="34" /> MyEliteHealth</a>
+      <p class="muted">{es ? 'Tu deporte, tu reloj y tu descanso en una sola app.' : 'Your sport, your watch and your rest in one app.'}</p>
+      <p class="muted small">© {new Date().getFullYear()} {SITE.company} · CIF {SITE.cif} · Madrid, España · v{SITE.version}</p>
+    </div>
+    <nav class="footer-links" aria-label="Legal">
+      {es ? (
+        <>
+          <a href="/legal/aviso-legal/">Aviso legal</a>
+          <a href="/legal/privacidad/">Privacidad</a>
+          <a href="/legal/cookies/">Cookies</a>
+          <a href={`mailto:${SITE.contactEmail}`}>Contacto</a>
+          <a href="/en/legal/privacy/">English</a>
+        </>
+      ) : (
+        <>
+          <a href="/en/legal/legal-notice/">Legal notice</a>
+          <a href="/en/legal/privacy/">Privacy</a>
+          <a href="/en/legal/cookies/">Cookies</a>
+          <a href={`mailto:${SITE.contactEmail}`}>Contact</a>
+          <a href="/legal/privacidad/">Español</a>
+        </>
+      )}
+    </nav>
+  </div>
+  <p class="wrap tiny muted">Apple, Apple Watch, iPhone y App Store son marcas de Apple Inc. MyEliteHealth es una app de deporte y bienestar; no es un producto sanitario ni diagnostica nada.</p>
+</footer>

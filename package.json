@@ -1,0 +1,18 @@
+{
+  "name": "landing-myelitehealth",
+  "type": "module",
+  "version": "1.1.2",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "deploy": "astro build && npx wrangler pages deploy dist --project-name landing-myelitehealth --branch main"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.2.1",
+    "@fontsource/barlow-condensed": "^5.1.0",
+    "@fontsource/inter": "^5.1.0",
+    "astro": "5.1.1"
+  }
+}

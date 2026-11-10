@@ -1,0 +1,20 @@
+---
+// Marco de iPhone con una captura de /public/capturas.
+// Si la captura aún no existe, enseña un hueco con su nombre (ver README:
+// «Capturas que faltan»). Así la web compila siempre.
+import fs from 'node:fs';
+import path from 'node:path';
+interface Props { name: string; alt: string; size?: 'sm' | 'md' | 'lg'; class?: string; float?: number; reveal?: string; delay?: number; eager?: boolean; tilt?: boolean; }
+const { name, alt, size = 'md', class: cls = '', float, reveal, delay, eager = false, tilt = false } = Astro.props;
+const exts = ['webp', 'png', 'jpg', 'jpeg'];
+const found = exts.map((e) => `${name}.${e}`).find((f) => fs.existsSync(path.join(process.cwd(), 'public', 'capturas', f)));
+---
+<figure class:list={['device', `device-${size}`, tilt && 'device-tilt', cls]} data-float={float} data-reveal={reveal} data-delay={delay}>
+  <div class="device-screen">
+    {found ? (
+      <img src={`/capturas/${found}`} alt={alt} loading={eager ? 'eager' : 'lazy'} fetchpriority={eager ? 'high' : undefined} decoding="async" width="640" height="1280" />
+    ) : (
+      <div class="device-missing"><span>Captura pendiente</span><code>{name}</code></div>
+    )}
+  </div>
+</figure>

@@ -1,0 +1,11 @@
+---
+import Icon from './Icon.astro';
+import { downloadHref, SITE } from '../config';
+interface Props { variant?: 'solid' | 'light'; }
+const { variant = 'solid' } = Astro.props;
+const external = Boolean(SITE.appStoreURL);
+---
+<a class:list={['store', `store-${variant}`]} href={downloadHref} target={external ? '_blank' : undefined} rel={external ? 'noopener' : undefined} data-magnetic>
+  <Icon name="apple" size={26} />
+  <span><small>Descárgala en el</small>App Store</span>
+</a>

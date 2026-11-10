@@ -5,7 +5,7 @@ export const SITE = {
   company: 'Amber Muscle S.L.',
   cif: 'B75723957',
   // Enlace de la App Store. Vacío = los botones bajan a la sección «Descargar».
-  appStoreURL: '',
+  appStoreURL: 'https://apps.apple.com/es/app/myelitehealth/id6761014103',
   contactEmail: 'director@ambermuscle.com',
 };
 

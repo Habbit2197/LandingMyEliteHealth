@@ -1,0 +1,20 @@
+---
+// Animación de entrada. Pon el archivo en public/img/ con el nombre
+// intro.webm, intro.mp4 o intro.gif (en ese orden de preferencia).
+// Si no hay ninguno, no se muestra nada. Se ve una vez por visita,
+// se puede saltar y no aparece con «Reducir movimiento».
+import fs from 'node:fs';
+import path from 'node:path';
+interface Props { duration?: number; }
+const { duration = 2600 } = Astro.props;
+const file = ['intro.webm', 'intro.mp4', 'intro.gif'].find((f) => fs.existsSync(path.join(process.cwd(), 'public', 'img', f)));
+const isVideo = file && !file.endsWith('.gif');
+---
+{file && (
+  <div class="intro" data-intro data-duration={duration} aria-hidden="true">
+    {isVideo
+      ? <video src={`/img/${file}`} autoplay muted playsinline></video>
+      : <img src={`/img/${file}`} alt="" />}
+    <button class="intro-skip" type="button">Saltar</button>
+  </div>
+)}

@@ -41,7 +41,13 @@ Si falta alguna, la web compila igual y enseña un hueco rayado con su nombre.
 | `recuperacion` | Recuperación y carga | Bienestar |
 | `movilidad` | Movilidad | Bienestar |
 
-Las que hay ahora son las de la web anterior. Sustitúyelas por las nuevas con el mismo nombre.
+**Sacadas de la grabación de pantalla (10 nov):** `inicio`, `actividad`, `pasos`, `bienestar`, `bienestar-mental`, `nutricion`, `zonas`, `zonas-trimp`, `curva-recuperacion`, `hrv`, `recovery-stack`, `alineacion`, `alertas`, `modulos`, `herramientas`, `entrenos`, `ciclismo`, `ciclismo-fc`, `splits` y `comparar`. Salen en «Tu día» (carril deslizable), «Entrenos», la portada y «Bienestar».
+
+Las de pádel, golf, baloncesto y racing son todavía las de la web anterior. Sustitúyelas por las nuevas con el mismo nombre.
+
+## Animación de entrada
+
+Pon el archivo en `public/img/` como `intro.webm`, `intro.mp4` o `intro.gif`. Se muestra a pantalla completa sobre fondo blanco al entrar, una vez por visita, con botón «Saltar». No aparece si el sistema tiene activado «Reducir movimiento». Si no hay archivo, no sale nada.
 
 ## Publicar en Cloudflare Pages
 

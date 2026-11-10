@@ -5,6 +5,7 @@ import Icon from '../components/Icon.astro';
 import Heading from '../components/Heading.astro';
 import StoreButton from '../components/StoreButton.astro';
 import Footer from '../components/Footer.astro';
+import Intro from '../components/Intro.astro';
 import { SITE, PRICES, downloadHref } from '../config';
 
 const sports = [
@@ -97,6 +98,14 @@ const metrics: Record<string, { icon: string; title: string; text: string }[]> =
     { icon: 'heart', title: 'Esfuerzo', text: 'Pulsaciones y carga del partido.' },
     { icon: 'spark', title: '¿Listo para jugar?', text: 'Antes del partido, con tu sueño, VFC y carga.' },
   ],
+  entrenos: [
+    { icon: 'flag', title: 'Mapa del recorrido', text: 'Tu ruta en el mapa en entrenos con GPS del Apple Watch.' },
+    { icon: 'heart', title: 'Frecuencia cardiaca', text: 'Curva completa y reparto por zonas de FC.' },
+    { icon: 'chart', title: 'Perfil de elevación', text: 'Cuánto subes y bajas en cada tramo.' },
+    { icon: 'layers', title: 'Splits por km', text: 'Ritmo de cada kilómetro, con los mejores y peores marcados.' },
+    { icon: 'gauge', title: 'Esfuerzo', text: 'Esfuerzo del entreno de 0 a 100, FC media y máxima.' },
+    { icon: 'arrow', title: 'Comparar', text: 'Cualquier entreno frente a uno anterior: duración, distancia, calorías, FC y ritmo.' },
+  ],
   racing: [
     { icon: 'flag', title: 'Etapas', text: 'Cada etapa guardada en tu historial y comparada.' },
     { icon: 'gauge', title: 'Velocidad media', text: 'De cada etapa, para comparar unas con otras.' },
@@ -113,9 +122,28 @@ const metrics: Record<string, { icon: string; title: string; text: string }[]> =
     { icon: 'move', title: 'Movilidad', text: 'Rutinas guiadas de 10 minutos y medición de alineación con la cámara del iPhone.' },
     { icon: 'doc', title: 'Informes', text: 'Tu semana en un documento y un PDF completo para tu entrenador.' },
     { icon: 'pulse', title: 'Simulador de entreno', text: 'Prueba una sesión antes de hacerla y mira su efecto en tu recuperación.' },
-    { icon: 'heart', title: 'Respiración', text: 'Sesiones guiadas en el Apple Watch.' },
+    { icon: 'heart', title: 'Recovery Stack', text: 'Respiración coherente, mindfulness, siestas y horarios, y cuáles mejoran tu VFC.' },
+    { icon: 'pulse', title: 'Zonas cardiacas y TRIMP', text: 'Tiempo por zona, polarización del entreno y carga semanal.' },
+    { icon: 'bolt', title: 'Actividad diaria', text: 'Pasos, distancia, pisos, calorías y anillos del día.' },
+    { icon: 'target', title: 'Nutrición', text: 'Escaneo de alimentos o registro manual, con tus calorías activas.' },
   ],
 };
+
+// Un día con la app: capturas sacadas de la grabación de pantalla.
+const day = [
+  { shot: 'inicio', title: 'Readiness Score', text: 'Al abrir la app: cómo de recuperado estás hoy, en un número, y la VFC de tu noche.' },
+  { shot: 'actividad', title: 'Actividad diaria', text: 'Pasos, distancia, pisos, calorías y los anillos de movimiento, ejercicio y de pie.' },
+  { shot: 'bienestar-mental', title: 'Bienestar', text: 'Cómo te sientes, el estrés percibido y la calidad de tu sueño, en tres toques.' },
+  { shot: 'nutricion', title: 'Nutrición', text: 'Escanea un alimento o regístralo a mano, y mira tus calorías activas del día.' },
+  { shot: 'zonas-trimp', title: 'Zonas cardiacas', text: 'Tiempo en cada zona, polarización del entreno y carga TRIMP semana a semana.' },
+  { shot: 'curva-recuperacion', title: 'Curva de recuperación', text: 'Cuánto bajan tus pulsaciones al parar, comparado con tus últimas sesiones.' },
+  { shot: 'hrv', title: 'Variabilidad cardiaca', text: 'Tu VFC más reciente frente a tu media, con la tendencia de 14 días.' },
+  { shot: 'recovery-stack', title: 'Recovery Stack', text: 'Acciones concretas para recuperar mejor: respiración, siestas, horarios… y cuáles te funcionan.' },
+  { shot: 'alineacion', title: 'Alineación corporal', text: 'Mide hombros, cadera y rodillas con la cámara del iPhone y el esqueleto 3D de ARKit.' },
+  { shot: 'alertas', title: 'Alertas', text: 'Un sistema que vigila tus datos y te avisa cuando algo se sale de lo normal en ti.' },
+  { shot: 'modulos', title: 'Módulos', text: 'Actividad, sueño, cardio, bienestar, rendimiento, análisis… cada uno con su pantalla.' },
+  { shot: 'herramientas', title: 'Informes y exportar', text: 'Informe semanal, exportación de tus datos y tus logros, desde Herramientas.' },
+];
 
 const Y = 'yes', N = 'no';
 const compare = [
@@ -141,6 +169,7 @@ const faq = [
 ];
 ---
 <Base title="MyEliteHealth · Tu deporte, tu Apple Watch y tu descanso en una sola app" description="Marcador en el Apple Watch, golpes, momentum punto a punto, pulsaciones, sueño y recuperación. Pádel, golf, baloncesto y racing en una sola app, sin cuentas y sin servidores.">
+  <Intro />
   <header class="nav">
     <div class="wrap nav-inner">
       <a class="brand" href="#top" aria-label="MyEliteHealth, inicio"><img src="/img/icono-padel.webp" alt="" width="34" height="34" /> MyEliteHealth</a>
@@ -149,6 +178,7 @@ const faq = [
       </button>
       <nav class="nav-links" id="menu" aria-label="Principal">
         <a href="#todo-en-uno">Todo en uno</a>
+        <a href="#tu-dia">Tu día</a>
         <a href="#padel">Pádel</a>
         <a href="#metricas">Métricas</a>
         <a href="#deportes">Deportes</a>
@@ -185,7 +215,7 @@ const faq = [
           </div>
         </div>
         <div class="hero-stage" aria-label="Capturas de la app">
-          <Screen name="padel-hub" alt="Inicio del módulo de pádel" size="sm" />
+          <Screen name="inicio" alt="Inicio de la app con el Readiness Score" size="sm" />
           <Screen name="padel-partido" alt="Detalle de un partido de pádel" eager />
           <Screen name="padel-panel" alt="Panel de pádel con la evolución" size="sm" />
           <div class="watch" data-watch aria-label="Marcador de ejemplo en el Apple Watch">
@@ -254,6 +284,30 @@ const faq = [
           </article>
         </div>
         <p class="aio-plus" data-reveal="zoom">Deporte <span class="red">+</span> reloj <span class="red">+</span> descanso <span class="red">=</span> <span class="grad-text">MyEliteHealth</span></p>
+      </div>
+    </section>
+
+    <!-- ═══ TU DÍA ═══ -->
+    <section id="tu-dia">
+      <div class="wrap">
+        <Heading eyebrow="Un día con MyEliteHealth" title='Desde que te levantas<br/><span class="grad-text">hasta que te acuestas.</span>' lead="Tu recuperación al despertar, tu actividad, tu entreno y tu descanso. Desliza para ver la app por dentro." />
+      </div>
+      <div class="rail" data-rail>
+        <div class="rail-track" tabindex="0" aria-label="Pantallas de la app">
+          {day.map((d, i) => (
+            <figure class="rail-item" data-reveal="up" data-delay={Math.min(i, 4) * 70}>
+              <Screen name={d.shot} alt={d.title} size="sm" />
+              <figcaption><b>{d.title}</b><span>{d.text}</span></figcaption>
+            </figure>
+          ))}
+        </div>
+        <div class="wrap rail-ui">
+          <div class="rail-progress"><i data-rail-bar></i></div>
+          <div class="rail-btns">
+            <button class="rail-btn" data-rail-prev aria-label="Anterior"><Icon name="arrow" size={20} /></button>
+            <button class="rail-btn" data-rail-next aria-label="Siguiente"><Icon name="arrow" size={20} /></button>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -338,6 +392,7 @@ const faq = [
           {sports.map((s, i) => (
             <button class:list={['tab', i === 0 && 'on']} role="tab" aria-selected={i === 0 ? 'true' : 'false'} data-tab={s.key}><img src={`/img/icono-${s.key}.webp`} alt="" width="30" height="30" />{s.name}</button>
           ))}
+          <button class="tab" role="tab" aria-selected="false" data-tab="entrenos"><span class="m-ico" style="width:30px;height:30px;border-radius:8px;display:grid;place-items:center;background:var(--grad);color:#fff"><Icon name="pulse" size={16} /></span>Entrenos</button>
           <button class="tab" role="tab" aria-selected="false" data-tab="bienestar"><span class="m-ico" style="width:30px;height:30px;border-radius:8px;display:grid;place-items:center;background:var(--grad);color:#fff"><Icon name="moon" size={16} /></span>Bienestar</button>
         </div>
         {Object.entries(metrics).map(([key, list], i) => (
@@ -408,6 +463,20 @@ const faq = [
       </div>
     </section>
 
+    <!-- ═══ ENTRENOS ═══ -->
+    <section id="entrenos">
+      <div class="glow glow-red" style="width:420px;height:420px;right:-160px;top:20%;opacity:.22" aria-hidden="true"></div>
+      <div class="wrap">
+        <Heading eyebrow="Cualquier entreno" title='Corres, pedaleas, caminas.<br/><span class="grad-text">También cuenta.</span>' lead="Los entrenos del Apple Watch llegan solos a la app con su mapa, sus zonas de pulsaciones, el perfil de elevación y los splits por kilómetro. Y puedes comparar cualquiera con uno anterior." />
+        <div class="workouts">
+          <figure data-reveal="up"><Screen name="ciclismo" alt="Entreno de ciclismo con mapa" size="sm" /><figcaption><b>Mapa y resumen</b>Duración, distancia, calorías, FC y esfuerzo.</figcaption></figure>
+          <figure data-reveal="up" data-delay="100"><Screen name="ciclismo-fc" alt="Zonas de FC y perfil de elevación" size="sm" /><figcaption><b>Zonas y elevación</b>Reparto por zonas de FC y perfil del recorrido.</figcaption></figure>
+          <figure data-reveal="up" data-delay="200"><Screen name="splits" alt="Splits por kilómetro" size="sm" /><figcaption><b>Splits por km</b>El ritmo de cada kilómetro, de un vistazo.</figcaption></figure>
+          <figure data-reveal="up" data-delay="300"><Screen name="comparar" alt="Comparar dos entrenos" size="sm" /><figcaption><b>Comparar</b>Este entreno frente al anterior, métrica a métrica.</figcaption></figure>
+        </div>
+      </div>
+    </section>
+
     <!-- ═══ BIENESTAR ═══ -->
     <section id="bienestar">
       <div class="glow glow-blue" style="width:500px;height:500px;left:-200px;top:20%;opacity:.25" aria-hidden="true"></div>
@@ -431,7 +500,7 @@ const faq = [
         </div>
         <div class="split-media">
           <Screen name="recuperacion" alt="Recuperación y carga" float={0.05} />
-          <Screen name="movilidad" alt="Rutinas de movilidad" float={-0.04} />
+          <Screen name="recovery-stack" alt="Recovery Stack" float={-0.04} />
         </div>
       </div>
     </section>
@@ -460,6 +529,19 @@ const faq = [
           </table>
         </div>
         <p class="compare-note">Comparación por tipo de app, según lo habitual en cada categoría; no se refiere a ningún producto concreto y cada app puede variar.</p>
+      </div>
+    </section>
+
+    <!-- ═══ CÓMO FUNCIONA ═══ -->
+    <section id="como-funciona" class="alt">
+      <div class="wrap">
+        <Heading eyebrow="Cómo funciona" title='De tus datos<br/><span class="grad-text">a decidir mejor.</span>' center />
+        <div class="how">
+          <div class="how-step" data-reveal="up"><span>1</span><h4>Descarga y conecta</h4><p>Instala MyEliteHealth y da permiso a Apple Salud. Tu Apple Watch empieza a aportar datos sin que hagas nada.</p></div>
+          <div class="how-step" data-reveal="up" data-delay="100"><span>2</span><h4>Aprende tu patrón</h4><p>Con los días, la app aprende tu propia referencia: tu VFC, tu sueño y tu carga normales. No rangos genéricos.</p></div>
+          <div class="how-step" data-reveal="up" data-delay="200"><span>3</span><h4>Juega y entrena</h4><p>Marcador y golpes en el reloj durante el partido; mapa, zonas y splits en cualquier entreno.</p></div>
+          <div class="how-step" data-reveal="up" data-delay="300"><span>4</span><h4>Decide cada mañana</h4><p>Tu Readiness, tus alertas y el Recovery Stack te dicen cuánto apretar hoy. Y el informe, para tu entrenador.</p></div>
+        </div>
       </div>
     </section>
 

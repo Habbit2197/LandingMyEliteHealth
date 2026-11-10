@@ -298,3 +298,52 @@ if (filterBox) {
 
 // Primer pintado, cuando todo lo anterior ya está definido.
 onScroll();
+
+// ── Carril «Tu día»: arrastrar con el ratón, botones y progreso ──
+$$('[data-rail]').forEach((rail) => {
+  const track = $('.rail-track', rail);
+  const bar = $('[data-rail-bar]', rail);
+  const item = () => $('.rail-item', track)?.getBoundingClientRect().width + 26 || 266;
+  const update = () => {
+    const max = track.scrollWidth - track.clientWidth;
+    const visible = track.clientWidth / track.scrollWidth;
+    bar.style.width = `${Math.max(visible, max > 0 ? visible + (1 - visible) * (track.scrollLeft / max) : 1) * 100}%`;
+  };
+  track.addEventListener('scroll', () => requestAnimationFrame(update), { passive: true });
+  addEventListener('resize', update, { passive: true });
+  $('[data-rail-prev]', rail)?.addEventListener('click', () => track.scrollBy({ left: -item() * 2, behavior: reduce ? 'auto' : 'smooth' }));
+  $('[data-rail-next]', rail)?.addEventListener('click', () => track.scrollBy({ left: item() * 2, behavior: reduce ? 'auto' : 'smooth' }));
+  if (finePointer) {
+    let down = false, startX = 0, startLeft = 0, moved = false;
+    track.addEventListener('pointerdown', (e) => { if (e.pointerType !== 'mouse') return; down = true; moved = false; startX = e.clientX; startLeft = track.scrollLeft; });
+    addEventListener('pointermove', (e) => {
+      if (!down) return;
+      const dx = e.clientX - startX;
+      if (Math.abs(dx) > 4) { moved = true; track.classList.add('dragging'); }
+      track.scrollLeft = startLeft - dx;
+    });
+    addEventListener('pointerup', () => { down = false; if (moved) track.classList.remove('dragging'); });
+  }
+  track.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') { track.scrollBy({ left: item(), behavior: 'smooth' }); e.preventDefault(); }
+    if (e.key === 'ArrowLeft') { track.scrollBy({ left: -item(), behavior: 'smooth' }); e.preventDefault(); }
+  });
+  update();
+});
+
+// ── Intro: se ve una vez por visita y se puede saltar ──────────────
+const intro = $('[data-intro]');
+if (intro) {
+  let seen = false;
+  try { seen = sessionStorage.getItem('meh-intro') === '1'; } catch {}
+  const close = () => { intro.classList.add('out'); setTimeout(() => intro.remove(), 800); };
+  if (seen || reduce) {
+    intro.remove();
+  } else {
+    try { sessionStorage.setItem('meh-intro', '1'); } catch {}
+    $('.intro-skip', intro)?.addEventListener('click', close);
+    const media = $('video', intro);
+    media?.addEventListener('ended', close);
+    setTimeout(close, Number(intro.dataset.duration || 2600));
+  }
+}

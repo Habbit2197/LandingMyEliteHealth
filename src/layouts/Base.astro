@@ -27,7 +27,8 @@ const ogImage = new URL('/img/og.jpg', Astro.site).toString();
   <meta property="og:image" content={ogImage} />
   <meta name="twitter:card" content="summary_large_image" />
   {SITE.appStoreURL && <meta name="apple-itunes-app" content={`app-id=${SITE.appStoreURL.match(/id(\d+)/)?.[1] ?? ''}`} />}
-  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+  <link rel="icon" href="/favicon-48.png" sizes="48x48" type="image/png" />
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
   <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site).toString()} />
   <script type="application/ld+json" set:html={JSON.stringify({

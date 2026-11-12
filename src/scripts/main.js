@@ -347,3 +347,104 @@ if (intro) {
     setTimeout(close, Number(intro.dataset.duration || 2600));
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   MOTOR DE SCROLL
+   El scroll deja de ser un disparador y pasa a ser la línea de tiempo.
+
+   Cada elemento con `data-scrub` recibe una variable CSS `--p` que va
+   de 0 a 1 según dónde esté en la pantalla. A partir de ahí la animación
+   se escribe en CSS, no aquí: se puede retocar sin tocar JavaScript, va
+   sobre el compositor y, lo importante, la escena avanza y retrocede con
+   el dedo del usuario en vez de dispararse una vez y olvidarse.
+
+     data-scrub            entra por abajo (0) y sale por arriba (1)
+     data-scrub="pin"      para secciones altas con algo pegado dentro:
+                           0 cuando el borde superior toca arriba del
+                           todo, 1 cuando el inferior llega al fondo
+   ═════════════════════════════════════════════════════════════════ */
+
+const scrubs = [];
+function registrarScrubs() {
+  scrubs.length = 0;
+  $$('[data-scrub]').forEach((el) => scrubs.push({ el, pin: el.dataset.scrub === 'pin' }));
+}
+
+function moverScrubs() {
+  const vh = innerHeight;
+  for (const s of scrubs) {
+    const r = s.el.getBoundingClientRect();
+    let p;
+    if (s.pin) {
+      const recorrido = r.height - vh;
+      p = recorrido > 0 ? -r.top / recorrido : 0;
+    } else {
+      p = (vh - r.top) / (vh + r.height);
+    }
+    p = p < 0 ? 0 : p > 1 ? 1 : p;
+    s.el.style.setProperty('--p', p.toFixed(4));
+  }
+}
+
+/* ── Escenas pegadas: el texto y la captura cambian con el scroll ──
+   Una sección alta, el móvil quieto en el centro y los pasos pasando.
+   El paso activo sale del mismo `--p`: nada de temporizadores. */
+const escenas = $$('[data-showcase]');
+function moverEscenas() {
+  for (const sc of escenas) {
+    const p = parseFloat(sc.style.getPropertyValue('--p')) || 0;
+    const pasos = $$('.sc-step', sc);
+    const capturas = $$('.sc-shot', sc);
+    if (!pasos.length) continue;
+    const i = Math.min(pasos.length - 1, Math.floor(p * pasos.length * 0.999));
+    pasos.forEach((el, k) => el.classList.toggle('on', k === i));
+    capturas.forEach((el, k) => el.classList.toggle('on', k === i));
+    sc.style.setProperty('--paso', i);
+  }
+}
+
+/* ── Texto que se arma palabra a palabra ──────────────────────────
+   Solo en elementos de texto plano: si llevan etiquetas dentro las
+   destrozaría, así que se comprueba antes. */
+function partirEnPalabras(el) {
+  if (el.children.length) return;
+  const palabras = el.textContent.trim().split(/\s+/);
+  el.textContent = '';
+  palabras.forEach((palabra, i) => {
+    const hueco = document.createElement('span');
+    hueco.className = 'w';
+    hueco.style.setProperty('--i', i);
+    const dentro = document.createElement('i');
+    dentro.textContent = palabra;
+    hueco.appendChild(dentro);
+    el.appendChild(hueco);
+    el.appendChild(document.createTextNode(' '));
+  });
+}
+
+if (!reduce) {
+  $$('[data-split]').forEach(partirEnPalabras);
+  const ioSplit = new IntersectionObserver((entradas) => {
+    entradas.forEach((e) => {
+      if (e.isIntersecting) { e.target.classList.add('in'); ioSplit.unobserve(e.target); }
+    });
+  }, { threshold: 0.3 });
+  $$('[data-split]').forEach((el) => ioSplit.observe(el));
+} else {
+  $$('[data-split]').forEach((el) => el.classList.add('in'));
+}
+
+/* ── Enganche con el bucle de scroll que ya existía ───────────────── */
+registrarScrubs();
+let tickScrub = false;
+function bucleScrub() {
+  moverScrubs();
+  moverEscenas();
+  tickScrub = false;
+}
+addEventListener('scroll', () => {
+  if (!tickScrub) { requestAnimationFrame(bucleScrub); tickScrub = true; }
+}, { passive: true });
+addEventListener('resize', () => requestAnimationFrame(bucleScrub), { passive: true });
+addEventListener('load', () => requestAnimationFrame(bucleScrub));
+requestAnimationFrame(bucleScrub);

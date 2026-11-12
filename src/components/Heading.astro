@@ -5,5 +5,7 @@ const { eyebrow, title, lead, center = false } = Astro.props;
 <header class:list={['heading', center && 'heading-center']}>
   {eyebrow && <p class="eyebrow" data-reveal="up">{eyebrow}</p>}
   <h2 data-reveal="up" data-delay="60" set:html={title} />
-  {lead && <p class="lead" data-reveal="up" data-delay="120">{lead}</p>}
+  <!-- El texto de apoyo se arma palabra a palabra al entrar en pantalla.
+       Solo aquí: es texto plano, así que partirlo no rompe nada. -->
+  {lead && <p class="lead" data-split>{lead}</p>}
 </header>

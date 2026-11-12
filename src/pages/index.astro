@@ -8,6 +8,9 @@ import Footer from '../components/Footer.astro';
 import Intro from '../components/Intro.astro';
 import { SITE, PRICES, downloadHref } from '../config';
 
+// El pádel tendrá sitio propio. Vacío = el botón baja a su bloque.
+const PADEL_URL = '';
+
 const sports = [
   { key: 'padel', name: 'Pádel' },
   { key: 'golf', name: 'Golf' },
@@ -130,6 +133,8 @@ const metrics: Record<string, { icon: string; title: string; text: string }[]> =
 };
 
 // Un día con la app: capturas sacadas de la grabación de pantalla.
+// La escena pegada se queda con cinco momentos; el carril, con el resto.
+const escena = [0, 4, 5, 6, 7];
 const day = [
   { shot: 'inicio', title: 'Readiness Score', text: 'Al abrir la app: cómo de recuperado estás hoy, en un número, y la VFC de tu noche.' },
   { shot: 'actividad', title: 'Actividad diaria', text: 'Pasos, distancia, pisos, calorías y los anillos de movimiento, ejercicio y de pie.' },
@@ -192,22 +197,22 @@ const faq = [
 
   <main id="contenido">
     <!-- ═══ HERO ═══ -->
-    <section class="hero" id="top">
+    <section class="hero on-dark" id="top" data-scrub>
       <div class="glow glow-blue" aria-hidden="true"></div>
       <div class="glow glow-red" aria-hidden="true"></div>
       <div class="grid-bg" aria-hidden="true"></div>
       <div class="wrap hero-grid">
         <div>
-          <p class="hero-badge"><b>v{SITE.version}</b> Pádel para clubes · Suscripción por deporte</p>
+          <p class="hero-badge"><b>v{SITE.version}</b> Tu cuerpo, medido de verdad</p>
           <h1>
-            <span class="line"><span>Todo tu</span></span>
-            <span class="line"><span class="grad-text">deporte.</span></span>
-            <span class="line"><span>Una sola app.</span></span>
+            <span class="line"><span>Entrena.</span></span>
+            <span class="line"><span class="grad-text">Recupera.</span></span>
+            <span class="line"><span>Repite.</span></span>
           </h1>
-          <p class="hero-lead">Marcador en tu Apple Watch, golpes, momentum punto a punto, pulsaciones, sueño y recuperación. Pádel, golf, baloncesto y racing, todo junto y sin que tus datos salgan de tu iPhone.</p>
+          <p class="hero-lead">Tu Apple Watch ya mide tu descanso, tu corazón y tu esfuerzo. MyEliteHealth lo junta y te dice una cosa cada mañana: cómo estás hoy y qué hacer con ello. Y tus datos no salen de tu iPhone.</p>
           <div class="hero-cta">
             <StoreButton />
-            <a class="btn btn-ghost" href="#padel">Ver cómo funciona <Icon name="arrow" size={18} /></a>
+            <a class="btn btn-ghost" href="#tu-dia">Ver cómo funciona <Icon name="arrow" size={18} /></a>
           </div>
           <div class="hero-sports">
             {sports.map((s) => <img src={`/img/icono-${s.key}.webp`} alt={s.name} width="50" height="50" />)}
@@ -288,13 +293,40 @@ const faq = [
     </section>
 
     <!-- ═══ TU DÍA ═══ -->
-    <section id="tu-dia">
+    <section id="tu-dia" class="showcase on-dark" data-scrub="pin" data-showcase>
+      <div class="showcase-track">
+        <div class="showcase-pin">
+          <div class="glow glow-blue" style="width:520px;height:520px;left:-180px;top:-120px" aria-hidden="true"></div>
+          <div class="glow glow-red" style="width:420px;height:420px;right:-140px;bottom:-100px" aria-hidden="true"></div>
+          <div class="showcase-grid">
+            <div class="showcase-steps">
+              <div class="showcase-rail" aria-hidden="true"><i></i></div>
+              {escena.map((n, i) => (
+                <article class={`sc-step${i === 0 ? ' on' : ''}`}>
+                  <span class="tag"><Icon name="bolt" size={18} />Paso {i + 1} de {escena.length}</span>
+                  <h3>{day[n].title}</h3>
+                  <p>{day[n].text}</p>
+                </article>
+              ))}
+            </div>
+            <div class="showcase-phone" aria-hidden="true">
+              {escena.map((n, i) => (
+                <div class={`sc-shot${i === 0 ? ' on' : ''}`}><Screen name={day[n].shot} alt="" size="lg" /></div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ Y TODO LO DEMÁS ═══ -->
+    <section id="mas">
       <div class="wrap">
-        <Heading eyebrow="Un día con MyEliteHealth" title='Desde que te levantas<br/><span class="grad-text">hasta que te acuestas.</span>' lead="Tu recuperación al despertar, tu actividad, tu entreno y tu descanso. Desliza para ver la app por dentro." />
+        <Heading eyebrow="Y todo lo demás" title='La app entera,<br/><span class="grad-text">de un vistazo.</span>' lead="Actividad, bienestar, nutrición, movilidad y avisos. Desliza para verla por dentro." />
       </div>
       <div class="rail" data-rail>
         <div class="rail-track" tabindex="0" aria-label="Pantallas de la app">
-          {day.map((d, i) => (
+          {day.filter((_, i) => !escena.includes(i)).map((d, i) => (
             <figure class="rail-item" data-reveal="up" data-delay={Math.min(i, 4) * 70}>
               <Screen name={d.shot} alt={d.title} size="sm" />
               <figcaption><b>{d.title}</b><span>{d.text}</span></figcaption>
@@ -312,24 +344,27 @@ const faq = [
     </section>
 
     <!-- ═══ PÁDEL: RELATO ═══ -->
-    <section id="padel" class="alt">
+    <section id="padel">
       <div class="wrap">
-        <Heading eyebrow="Pádel · el módulo estrella" title='Sabes el resultado.<br/><span class="grad-text">Ahora sabrás por qué.</span>' lead="Llevas la cuenta con un toque y, al acabar, sabes dónde ganaste y dónde perdiste los puntos, cómo respondió tu cuerpo, con quién juegas mejor y desde qué lado de la pista." />
-        <div class="story">
-          <div class="story-steps">
-            {padelSteps.map((s) => (
-              <article class="step">
-                <span class="tag"><Icon name={s.icon} size={18} />{s.tag}</span>
-                <h3>{s.title}</h3>
-                <p>{s.text}</p>
-                <ul>{s.list.map((l) => <li>{l}</li>)}</ul>
-                <div class="device-inline"><Screen name={s.shot} alt={s.title} size="sm" /></div>
-              </article>
-            ))}
+        <div class="jump on-dark" data-reveal="zoom">
+          <div>
+            <span class="tag" style="display:inline-flex;align-items:center;gap:8px;color:var(--cyan);font-weight:600;font-size:.85rem;letter-spacing:1.4px;text-transform:uppercase;margin-bottom:14px">
+              <Icon name="watch" size={18} />Un sitio propio
+            </span>
+            <h3>El pádel tiene<br/><span class="grad-text">su propia casa.</span></h3>
+            <p>Marcador desde el Apple Watch, golpes contados solos, el momentum del partido punto a punto y con quién juegas mejor. Es el módulo más grande de la app y se cuenta aparte.</p>
+            <ul style="list-style:none;padding:0;margin:0 0 26px;display:grid;gap:10px">
+              {padelSteps.slice(0, 3).map((x) => (
+                <li style="display:flex;gap:10px"><Icon name="check" size={18} />{x.title}</li>
+              ))}
+            </ul>
+            <a class="btn btn-grad" href={PADEL_URL || '#descargar'}>
+              Ver MyEliteHealth Pádel <Icon name="arrow" size={18} />
+            </a>
           </div>
-          <div class="story-pin" aria-hidden="true">
-            {padelSteps.map((s) => <Screen name={s.shot} alt="" size="lg" />)}
-            <div class="story-dots">{padelSteps.map(() => <span />)}</div>
+          <div class="jump-shots" aria-hidden="true" data-scrub data-depth style="--depth:70px">
+            <Screen name="padel-momentum" alt="" size="sm" />
+            <Screen name="padel-companeros" alt="" size="sm" />
           </div>
         </div>
       </div>
@@ -688,7 +723,7 @@ const faq = [
     </section>
 
     <!-- ═══ DESCARGA ═══ -->
-    <section id="descargar" class="download">
+    <section id="descargar" class="download on-dark">
       <div class="glow glow-blue" aria-hidden="true"></div>
       <div class="glow glow-red" aria-hidden="true"></div>
       <div class="grid-bg" aria-hidden="true"></div>

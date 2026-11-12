@@ -362,12 +362,18 @@ if (intro) {
      data-scrub="pin"      para secciones altas con algo pegado dentro:
                            0 cuando el borde superior toca arriba del
                            todo, 1 cuando el inferior llega al fondo
-   ═════════════════════════════════════════════════════════════════ */
+     data-scrub="salida"   0 mientras la sección está colocada arriba y
+                           1 cuando ya ha salido por arriba
+
+   🔧 El modo «salida» existe porque el de por defecto estaba mal para el
+   héroe: una sección que ocupa justo la pantalla da 0,5 con esa fórmula,
+   y como ésa es la situación al cargar la página, el héroe nacía a mitad
+   de su animación de salida, con el texto medio transparente. */
 
 const scrubs = [];
 function registrarScrubs() {
   scrubs.length = 0;
-  $$('[data-scrub]').forEach((el) => scrubs.push({ el, pin: el.dataset.scrub === 'pin' }));
+  $$('[data-scrub]').forEach((el) => scrubs.push({ el, modo: el.dataset.scrub || 'paso' }));
 }
 
 function moverScrubs() {
@@ -375,9 +381,11 @@ function moverScrubs() {
   for (const s of scrubs) {
     const r = s.el.getBoundingClientRect();
     let p;
-    if (s.pin) {
+    if (s.modo === 'pin') {
       const recorrido = r.height - vh;
       p = recorrido > 0 ? -r.top / recorrido : 0;
+    } else if (s.modo === 'salida') {
+      p = r.height > 0 ? -r.top / r.height : 0;
     } else {
       p = (vh - r.top) / (vh + r.height);
     }
@@ -395,10 +403,20 @@ function moverEscenas() {
     const p = parseFloat(sc.style.getPropertyValue('--p')) || 0;
     const pasos = $$('.sc-step', sc);
     const capturas = $$('.sc-shot', sc);
+    const pips = $$('.sc-pips span', sc);
     if (!pasos.length) continue;
     const i = Math.min(pasos.length - 1, Math.floor(p * pasos.length * 0.999));
-    pasos.forEach((el, k) => el.classList.toggle('on', k === i));
-    capturas.forEach((el, k) => el.classList.toggle('on', k === i));
+    if (+sc.dataset.paso === i) continue;        // solo al cambiar de paso
+    sc.dataset.paso = i;
+    pasos.forEach((el, k) => {
+      el.classList.toggle('on', k === i);
+      el.classList.toggle('antes', k < i);       // sale por arriba o por abajo
+    });
+    capturas.forEach((el, k) => {
+      el.classList.toggle('on', k === i);
+      el.classList.toggle('antes', k < i);
+    });
+    pips.forEach((el, k) => el.classList.toggle('on', k === i));
     sc.style.setProperty('--paso', i);
   }
 }

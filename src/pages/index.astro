@@ -197,7 +197,7 @@ const faq = [
 
   <main id="contenido">
     <!-- ═══ HERO ═══ -->
-    <section class="hero on-dark" id="top" data-scrub>
+    <section class="hero on-dark" id="top" data-scrub="salida">
       <div class="glow glow-blue" aria-hidden="true"></div>
       <div class="glow glow-red" aria-hidden="true"></div>
       <div class="grid-bg" aria-hidden="true"></div>
@@ -303,6 +303,7 @@ const faq = [
               <div class="showcase-rail" aria-hidden="true"><i></i></div>
               {escena.map((n, i) => (
                 <article class={`sc-step${i === 0 ? ' on' : ''}`}>
+                  <b class="sc-num">{String(i + 1).padStart(2, '0')}</b>
                   <span class="tag"><Icon name="bolt" size={18} />Paso {i + 1} de {escena.length}</span>
                   <h3>{day[n].title}</h3>
                   <p>{day[n].text}</p>
@@ -310,9 +311,20 @@ const faq = [
               ))}
             </div>
             <div class="showcase-phone" aria-hidden="true">
-              {escena.map((n, i) => (
-                <div class={`sc-shot${i === 0 ? ' on' : ''}`}><Screen name={day[n].shot} alt="" size="lg" /></div>
-              ))}
+              <!-- Un solo móvil: lo que cambia es la pantalla de dentro.
+                   Antes era un marco por paso fundiéndose con el siguiente,
+                   y lo que se veía era el teléfono parpadeando. -->
+              <figure class="device device-lg sc-device">
+                <div class="device-screen">
+                  {escena.map((n, i) => (
+                    <img class={`sc-shot${i === 0 ? ' on' : ''}`} src={`/capturas/${day[n].shot}.webp`}
+                         alt="" loading="lazy" decoding="async" width="640" height="1280" />
+                  ))}
+                </div>
+              </figure>
+              <div class="sc-pips">
+                {escena.map((_, i) => <span class={i === 0 ? 'on' : ''}>{String(i + 1).padStart(2, '0')}</span>)}
+              </div>
             </div>
           </div>
         </div>
